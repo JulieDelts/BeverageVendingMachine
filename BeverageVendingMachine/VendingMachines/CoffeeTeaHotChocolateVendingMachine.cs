@@ -15,17 +15,11 @@ namespace BeverageVendingMachine.VendingMachines
 
         public const int MaxNumberOfTeaBags = 40;
 
-        private const int _maxPurchaseCountBeforeBreakingDown = 15;
-
-        private int _currentPurchaseCount;
-
-        public CoffeeTeaHotChocolateVendingMachine(int id, CoffeeTypesStorage coffeeTypesStorage, TeaTypesStorage teaTypesStorage): base(id, coffeeTypesStorage)
+        public CoffeeTeaHotChocolateVendingMachine(int id, CoffeeTypesStorage coffeeTypesStorage, int maxPurchaseCountBeforeBreakingDown, TeaTypesStorage teaTypesStorage): base(id, maxPurchaseCountBeforeBreakingDown, coffeeTypesStorage)
         {
-            Id = id;
             AmountOfCocoaPowder = 0;
             NumberOfTeaBags = 0;
             TeaTypesStorageUnit = teaTypesStorage;
-            _currentPurchaseCount = 0;
         }
 
         public Tea? SellTea(string teaName)
@@ -34,7 +28,7 @@ namespace BeverageVendingMachine.VendingMachines
 
             if (isReadyToSell)
             {
-                Dictionary<string, Tea> teaTypes = TeaTypesStorageUnit.GetAllTeaTypes();
+                Dictionary<string, Tea> teaTypes = TeaTypesStorageUnit.GetAllTypes();
 
                 if (teaTypes.ContainsKey(teaName))
                 {
@@ -49,7 +43,7 @@ namespace BeverageVendingMachine.VendingMachines
                         NumberOfTeaBags--;
                         AmountOfSugar -= tea.Sugar;
                         AmountOfWater -= tea.Water;
-                        _currentPurchaseCount++;
+                        CurrentPurchaseCount++;
 
                         return tea;
                     }
@@ -88,7 +82,7 @@ namespace BeverageVendingMachine.VendingMachines
                     AmountOfCocoaPowder -= hotChocolate.CocoaPowder;
                     AmountOfMilkPowder -= hotChocolate.MilkPowder;
                     AmountOfSugar -= hotChocolate.Sugar;
-                    _currentPurchaseCount++;
+                    CurrentPurchaseCount++;
 
                     return hotChocolate;
                 }
@@ -105,7 +99,7 @@ namespace BeverageVendingMachine.VendingMachines
 
         public override void DisplayAvailableDrinkTypes()
         {
-            Dictionary<string, Coffee> coffeeTypes = CoffeeTypesStorageUnit.GetAllCoffeeTypes();
+            Dictionary<string, Coffee> coffeeTypes = CoffeeTypesStorageUnit.GetAllTypes();
 
             Console.WriteLine("Available coffee types:");
 
@@ -114,7 +108,7 @@ namespace BeverageVendingMachine.VendingMachines
                 Console.WriteLine(coffee);
             }
 
-            Dictionary<string, Tea> teaTypes = TeaTypesStorageUnit.GetAllTeaTypes();
+            Dictionary<string, Tea> teaTypes = TeaTypesStorageUnit.GetAllTypes();
 
             Console.WriteLine("Available tea types:");
 

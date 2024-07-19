@@ -2,10 +2,8 @@
 
 namespace BeverageVendingMachine.VendingMachines
 {
-    public class OrangeJuiceVendingMachine
+    public class OrangeJuiceVendingMachine : AbstractVendingMachine
     {
-        public int Id { get; init; }
-
         public int CurrentLoad { get; private set; }
 
         public int NumberOfCups { get; private set; }
@@ -14,16 +12,10 @@ namespace BeverageVendingMachine.VendingMachines
 
         public const int MaxCapacity = 35;
 
-        private const int _maxPurchaseCountBeforeBreakingDown = 15;
-
-        private int _currentPurchaseCount;
-
-        public OrangeJuiceVendingMachine(int id)
+        public OrangeJuiceVendingMachine(int id, int maxPurchaseCountBeforeBreakingDown) : base(id, maxPurchaseCountBeforeBreakingDown)
         {
-            Id = id;
             CurrentLoad = 0;
             NumberOfCups = 0;
-            _currentPurchaseCount = 0;
         }
 
         public OrangeJuice? Sell(DateTime timeOfPurchase)
@@ -39,7 +31,7 @@ namespace BeverageVendingMachine.VendingMachines
                 {
                     CurrentLoad -= orangeJuice.NumberOfOrangesNeeded;
                     NumberOfCups--;
-                    _currentPurchaseCount++;
+                    CurrentPurchaseCount++;
 
                     return orangeJuice;
                 }
@@ -54,9 +46,9 @@ namespace BeverageVendingMachine.VendingMachines
             }
         }
 
-        public void Repair()
+        public override void DisplayAvailableDrinkTypes()
         {
-            _currentPurchaseCount = 0;
+            Console.WriteLine("We sell orange juice here!");
         }
 
         public void Load()
@@ -72,7 +64,7 @@ namespace BeverageVendingMachine.VendingMachines
 
             OrangeJuice orangeJuice = new OrangeJuice();
 
-            if (_currentPurchaseCount < _maxPurchaseCountBeforeBreakingDown)
+            if (CurrentPurchaseCount < MaxPurchaseCountBeforeBreakingDown)
             {
                 Console.WriteLine("The machine is functioning properly.");
             }
@@ -104,12 +96,14 @@ namespace BeverageVendingMachine.VendingMachines
         {
             bool readyToSellGoods = true;
 
-            if (_currentPurchaseCount == _maxPurchaseCountBeforeBreakingDown || TimeOfLastUpdate.AddDays(2) < timeOfPurchase)
+            if (CurrentPurchaseCount == MaxPurchaseCountBeforeBreakingDown || TimeOfLastUpdate.AddDays(2) < timeOfPurchase)
             {
                 readyToSellGoods = false;
             }
 
             return readyToSellGoods;
         }
+
+
     }
 }

@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace BeverageVendingMachine.DrinkModels
 {
-    public class Coffee
+    public class Coffee: Drink
     {
-        public string Name { get; set; } = string.Empty;
-
         public double Sugar { get; set; }
 
         public double Water { get; set; }
@@ -17,8 +15,6 @@ namespace BeverageVendingMachine.DrinkModels
         public double CoffeePowder { get; set; }
 
         public double MilkPowder { get; set; }
-
-        public double Price { get; set; }
 
     }
 }

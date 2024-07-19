@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BeverageVendingMachine.DrinkModels
 {
-    public class HotChocolate
+    public class HotChocolate: Drink
     {
         public double CocoaPowder { get; set; } = 30;
 
@@ -16,6 +16,6 @@ namespace BeverageVendingMachine.DrinkModels
 
         public double Sugar { get; set; } = 20;
 
-        public double Price { get; set; } = 250;
+        public override double Price { get; set; } = 250;
     }
 }

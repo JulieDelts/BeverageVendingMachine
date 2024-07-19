@@ -3,16 +3,11 @@ using System.Text.Json;
 
 namespace BeverageVendingMachine.StorageUnits
 {
-    public class CoffeeTypesStorage
+    public class CoffeeTypesStorage: AbstractTypesStorage
     {
-        private string _filePath;
-
-        public CoffeeTypesStorage(string path = "C:\\Users\\Юлия\\Desktop\\Программули\\BeverageVendingMachine\\CoffeeTypes.txt")
-        {
-            _filePath = path;
-        }
-
-        public Dictionary<string, Coffee> GetAllCoffeeTypes()
+        public CoffeeTypesStorage(string path = "C:\\Users\\Юлия\\Desktop\\Программули\\BeverageVendingMachine\\CoffeeTypes.txt"): base(path) { }
+ 
+        public Dictionary<string, Coffee> GetAllTypes()
         {
             string collection = string.Empty;
 
@@ -35,13 +30,13 @@ namespace BeverageVendingMachine.StorageUnits
             return CoffeeTypes;
         }
 
-        public Coffee GetCoffeeType(string coffeeType)
+        public Coffee GetType(string type)
         {
-            Dictionary<string, Coffee> coffeeTypes = GetAllCoffeeTypes();
+            Dictionary<string, Coffee> coffeeTypes = GetAllTypes();
 
-            if (coffeeTypes.ContainsKey(coffeeType))
+            if (coffeeTypes.ContainsKey(type))
             {
-                return coffeeTypes[coffeeType];
+                return coffeeTypes[type];
             }
             else
             {
@@ -49,30 +44,30 @@ namespace BeverageVendingMachine.StorageUnits
             }
         }
 
-        public void Add(Coffee coffeeType)
+        public void Add(Coffee type)
         {
-            Dictionary<string, Coffee> coffeeTypes = GetAllCoffeeTypes();
+            Dictionary<string, Coffee> coffeeTypes = GetAllTypes();
 
-            coffeeTypes.Add(coffeeType.Name, coffeeType);
+            coffeeTypes.Add(type.Name, type);
 
             Save(coffeeTypes);
         }
 
-        public void Remove(string coffeeType)
+        public void Remove(string type)
         {
-            Dictionary<string, Coffee> coffeeTypes = GetAllCoffeeTypes();
+            Dictionary<string, Coffee> coffeeTypes = GetAllTypes();
 
-            if (coffeeTypes.ContainsKey(coffeeType))
+            if (coffeeTypes.ContainsKey(type))
             {
-                coffeeTypes.Remove(coffeeType);
+                coffeeTypes.Remove(type);
             }
 
             Save(coffeeTypes);
         }
 
-        private void Save(Dictionary<string, Coffee> coffeeTypes)
+        private void Save(Dictionary<string, Coffee> types)
         {
-            string json = JsonSerializer.Serialize<Dictionary<string, Coffee>>(coffeeTypes);
+            string json = JsonSerializer.Serialize<Dictionary<string, Coffee>>(types);
 
             using (StreamWriter streamWriter = new StreamWriter(_filePath, false))
             {

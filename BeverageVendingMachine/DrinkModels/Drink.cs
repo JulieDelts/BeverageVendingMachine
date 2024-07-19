@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace BeverageVendingMachine.DrinkModels
 {
-    public class Lemonade: Drink
+    public abstract class Drink
     {
-        bool IsSparkling { get; set; }
+        public string Name { get; set; } = string.Empty;
+
+        public virtual double Price { get; set; }
     }
 }

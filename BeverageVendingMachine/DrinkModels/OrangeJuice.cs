@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace BeverageVendingMachine.DrinkModels
 {
-    public class OrangeJuice
+    public class OrangeJuice: Drink
     {
         public int NumberOfOrangesNeeded { get; set; } = 2;
 
-        public double Price { get; set; } = 300;
+        public override double Price { get; set; } = 300;
     }
 }

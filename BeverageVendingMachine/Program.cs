@@ -8,7 +8,6 @@ namespace BeverageVendingMachine
     {
         static void Main(string[] args)
         {
-           
         }
     }
 }

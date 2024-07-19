@@ -3,10 +3,8 @@ using BeverageVendingMachine.StorageUnits;
 
 namespace BeverageVendingMachine.VendingMachines
 {
-    public class LemonadeVendingMachine
+    public class LemonadeVendingMachine: AbstractVendingMachine
     {
-        public int Id { get; init; }
-
         public LemonadeTypesStorage TypesStorageUnit { get; private set; }
 
         public Dictionary<string, int> LemonadeCansNumber { get; private set; }
@@ -15,17 +13,11 @@ namespace BeverageVendingMachine.VendingMachines
 
         public const int MaxCapacity = 60;
 
-        private const int _maxPurchaseCountBeforeBreakingDown = 20;
-
-        private int _currentPurchaseCount;
-
-        public LemonadeVendingMachine(int id, LemonadeTypesStorage typesStorage)
+        public LemonadeVendingMachine(int id, int maxPurchaseCountBeforeBreakingDown, LemonadeTypesStorage typesStorage): base(id, maxPurchaseCountBeforeBreakingDown)
         {
-            Id = id;
             TypesStorageUnit = typesStorage;
             LemonadeCansNumber = new Dictionary<string, int>();
             CurrentLoad = 0;
-            _currentPurchaseCount = 0;
         }
 
         public Lemonade? Sell(string lemonadeType)
@@ -38,10 +30,10 @@ namespace BeverageVendingMachine.VendingMachines
             {
                 if (LemonadeCansNumber.ContainsKey(lemonadeType) && LemonadeCansNumber[lemonadeType] >= 1)
                 {
-                    Lemonade lemonade = TypesStorageUnit.GetLemonadeType(lemonadeType);
+                    Lemonade lemonade = TypesStorageUnit.GetType(lemonadeType);
                     CurrentLoad--;
                     LemonadeCansNumber[lemonadeType]--;
-                    _currentPurchaseCount++;
+                    CurrentPurchaseCount++;
 
                     return lemonade;
                 }
@@ -58,7 +50,7 @@ namespace BeverageVendingMachine.VendingMachines
 
         public void Load(string lemonadeType, int numberOfCans)
         {
-            Dictionary<string, Lemonade> lemonadeTypes = TypesStorageUnit.GetAllLemonadeTypes();
+            Dictionary<string, Lemonade> lemonadeTypes = TypesStorageUnit.GetAllTypes();
 
             lemonadeType = lemonadeType.ToLower();
 
@@ -93,7 +85,7 @@ namespace BeverageVendingMachine.VendingMachines
             }
         }
 
-        public void DisplayAvailableDrinkTypes()
+        public override void DisplayAvailableDrinkTypes()
         {
             Console.WriteLine("Available lemonade types:");
 
@@ -107,7 +99,7 @@ namespace BeverageVendingMachine.VendingMachines
         {
             Console.WriteLine($"Vending machine {Id} diagnostics info:");
 
-            if (_currentPurchaseCount < _maxPurchaseCountBeforeBreakingDown)
+            if (CurrentPurchaseCount < MaxPurchaseCountBeforeBreakingDown)
             {
                 Console.WriteLine("The machine is functioning properly.");
             }
@@ -124,16 +116,11 @@ namespace BeverageVendingMachine.VendingMachines
             }
         }
 
-        public void Repair()
-        {
-            _currentPurchaseCount = 0;
-        }
-
         private bool IsReadyToSell()
         {
             bool readyToSellGoods = true;
 
-            if (_currentPurchaseCount == _maxPurchaseCountBeforeBreakingDown)
+            if (CurrentPurchaseCount == MaxPurchaseCountBeforeBreakingDown)
             {
                 readyToSellGoods = false;
             }

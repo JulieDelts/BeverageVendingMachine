@@ -8,16 +8,11 @@ using BeverageVendingMachine.DrinkModels;
 
 namespace BeverageVendingMachine.StorageUnits
 {
-    public class LemonadeTypesStorage
+    public class LemonadeTypesStorage: AbstractTypesStorage
     {
-        private string _filePath;
+        public LemonadeTypesStorage(string path = "C:\\Users\\Юлия\\Desktop\\Программули\\BeverageVendingMachine\\LemonadeTypes.txt"): base(path) { }
 
-        public LemonadeTypesStorage(string path = "C:\\Users\\Юлия\\Desktop\\Программули\\BeverageVendingMachine\\LemonadeTypes.txt") 
-        {
-            _filePath = path;
-        }
-
-        public Dictionary<string, Lemonade> GetAllLemonadeTypes()
+        public  Dictionary<string, Lemonade> GetAllTypes()
         {
             string collection = string.Empty;
 
@@ -40,13 +35,13 @@ namespace BeverageVendingMachine.StorageUnits
             return lemonadeTypes;
         }
 
-        public Lemonade GetLemonadeType(string lemonadeType)
+        public Lemonade GetType(string type)
         { 
-            Dictionary<string, Lemonade> lemonadeTypes = GetAllLemonadeTypes();
+            Dictionary<string, Lemonade> lemonadeTypes = GetAllTypes();
 
-            if (lemonadeTypes.ContainsKey(lemonadeType))
+            if (lemonadeTypes.ContainsKey(type))
             {
-                return lemonadeTypes[lemonadeType];
+                return lemonadeTypes[type];
             }
             else 
             { 
@@ -54,30 +49,30 @@ namespace BeverageVendingMachine.StorageUnits
             }
         }
 
-        public void Add(Lemonade lemonadeType)
+        public void Add(Lemonade type)
         {
-            Dictionary<string, Lemonade> lemonadeTypes = GetAllLemonadeTypes();
+            Dictionary<string, Lemonade> lemonadeTypes = GetAllTypes();
 
-            lemonadeTypes.Add(lemonadeType.Name, lemonadeType);
+            lemonadeTypes.Add(type.Name, type);
 
             Save(lemonadeTypes);
         }
 
-        public void Remove(string lemonadeType)
+        public void Remove(string type)
         {
-            Dictionary<string, Lemonade> lemonadeTypes = GetAllLemonadeTypes();
+            Dictionary<string, Lemonade> lemonadeTypes = GetAllTypes();
 
-            if (lemonadeTypes.ContainsKey(lemonadeType))
+            if (lemonadeTypes.ContainsKey(type))
             {
-                lemonadeTypes.Remove(lemonadeType);
+                lemonadeTypes.Remove(type);
             }
 
             Save(lemonadeTypes);
         }
 
-        private void Save(Dictionary<string, Lemonade> lemonadeTypes)
+        private void Save(Dictionary<string, Lemonade> types)
         {
-            string json = JsonSerializer.Serialize<Dictionary<string, Lemonade>>(lemonadeTypes);
+            string json = JsonSerializer.Serialize<Dictionary<string, Lemonade>>(types);
 
             using (StreamWriter streamWriter = new StreamWriter(_filePath, false))
             {

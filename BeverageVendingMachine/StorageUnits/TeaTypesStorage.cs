@@ -3,16 +3,11 @@ using BeverageVendingMachine.DrinkModels;
 
 namespace BeverageVendingMachine.StorageUnits
 {
-    public class TeaTypesStorage
+    public class TeaTypesStorage: AbstractTypesStorage
     {
-        private string _filePath;
+        public TeaTypesStorage(string path = "C:\\Users\\Юлия\\Desktop\\Программули\\BeverageVendingMachine\\TeaTypes.txt"): base(path) { }
 
-        public TeaTypesStorage(string path = "C:\\Users\\Юлия\\Desktop\\Программули\\BeverageVendingMachine\\TeaTypes.txt")
-        {
-            _filePath = path;
-        }
-
-        public Dictionary<string, Tea> GetAllTeaTypes()
+        public Dictionary<string, Tea> GetAllTypes()
         {
             string collection = string.Empty;
 
@@ -35,13 +30,13 @@ namespace BeverageVendingMachine.StorageUnits
             return teaTypes;
         }
 
-        public Tea GetTeaType(string teaType)
+        public Tea GetType(string type)
         {
-            Dictionary<string, Tea> teaTypes = GetAllTeaTypes();
+            Dictionary<string, Tea> teaTypes = GetAllTypes();
 
-            if (teaTypes.ContainsKey(teaType))
+            if (teaTypes.ContainsKey(type))
             {
-                return teaTypes[teaType];
+                return teaTypes[type];
             }
             else
             {
@@ -49,30 +44,30 @@ namespace BeverageVendingMachine.StorageUnits
             }
         }
 
-        public void Add(Tea teaType)
+        public void Add(Tea type)
         {
-            Dictionary<string, Tea> teaTypes = GetAllTeaTypes();
+            Dictionary<string, Tea> teaTypes = GetAllTypes();
 
-            teaTypes.Add(teaType.Name, teaType);
+            teaTypes.Add(type.Name, type);
 
             Save(teaTypes);
         }
 
-        public void Remove(string teaType)
+        public void Remove(string type)
         {
-            Dictionary<string, Tea> teaTypes = GetAllTeaTypes();
+            Dictionary<string, Tea> teaTypes = GetAllTypes();
 
-            if (teaTypes.ContainsKey(teaType))
+            if (teaTypes.ContainsKey(type))
             {
-                teaTypes.Remove(teaType);
+                teaTypes.Remove(type);
             }
 
             Save(teaTypes);
         }
 
-        private void Save(Dictionary<string, Tea> teaTypes)
+        private void Save(Dictionary<string, Tea> types)
         {
-            string json = JsonSerializer.Serialize<Dictionary<string, Tea>>(teaTypes);
+            string json = JsonSerializer.Serialize<Dictionary<string, Tea>>(types);
 
             using (StreamWriter streamWriter = new StreamWriter(_filePath, false))
             {

@@ -3,10 +3,8 @@ using BeverageVendingMachine.StorageUnits;
 
 namespace BeverageVendingMachine.VendingMachines
 {
-    public class CoffeeVendingMachine
+    public class CoffeeVendingMachine : AbstractVendingMachine
     {
-        public int Id { get; init; }
-
         public int NumberOfCups { get; protected set; }
 
         public double AmountOfCoffeePowder { get; protected set; }
@@ -29,20 +27,14 @@ namespace BeverageVendingMachine.VendingMachines
 
         public const double MaxWaterCapacity = 2000;
 
-        private const int _maxPurchaseCountBeforeBreakingDown = 15;
-
-        private int _currentPurchaseCount;
-
-        public CoffeeVendingMachine(int id, CoffeeTypesStorage typesStorage)
+        public CoffeeVendingMachine(int id, int maxPurchaseCountBeforeBreakingDown, CoffeeTypesStorage typesStorage) : base(id, maxPurchaseCountBeforeBreakingDown)
         {
-            Id = id;
             NumberOfCups = 0;
             AmountOfCoffeePowder = 0;
             AmountOfMilkPowder = 0;
             AmountOfSugar = 0;
             AmountOfWater = 0;
             CoffeeTypesStorageUnit = typesStorage;
-            _currentPurchaseCount = 0;
         }
 
         public Coffee? SellCoffee(string coffeeType)
@@ -51,9 +43,9 @@ namespace BeverageVendingMachine.VendingMachines
 
             bool isReadyToSell = IsReadyToSell();
 
-            if (isReadyToSell) 
+            if (isReadyToSell)
             {
-                Dictionary<string, Coffee> coffeeTypes = CoffeeTypesStorageUnit.GetAllCoffeeTypes();
+                Dictionary<string, Coffee> coffeeTypes = CoffeeTypesStorageUnit.GetAllTypes();
 
                 if (coffeeTypes.ContainsKey(coffeeType))
                 {
@@ -70,13 +62,13 @@ namespace BeverageVendingMachine.VendingMachines
                         AmountOfCoffeePowder -= coffee.CoffeePowder;
                         AmountOfMilkPowder -= coffee.MilkPowder;
                         AmountOfSugar -= coffee.Sugar;
-                        _currentPurchaseCount++;
+                        CurrentPurchaseCount++;
 
                         return coffee;
                     }
-                    else 
+                    else
                     {
-                       return null;
+                        return null;
                     }
                 }
                 else
@@ -90,9 +82,9 @@ namespace BeverageVendingMachine.VendingMachines
             }
         }
 
-        public virtual void DisplayAvailableDrinkTypes()
-        { 
-            Dictionary<string,Coffee> coffeeTypes = CoffeeTypesStorageUnit.GetAllCoffeeTypes();
+        public override void DisplayAvailableDrinkTypes()
+        {
+            Dictionary<string, Coffee> coffeeTypes = CoffeeTypesStorageUnit.GetAllTypes();
 
             Console.WriteLine("Available coffee types:");
 
@@ -106,7 +98,7 @@ namespace BeverageVendingMachine.VendingMachines
         {
             Console.WriteLine($"Vending machine {Id} diagnostics info:");
 
-            if (_currentPurchaseCount < _maxPurchaseCountBeforeBreakingDown)
+            if (CurrentPurchaseCount < MaxPurchaseCountBeforeBreakingDown)
             {
                 Console.WriteLine("The machine is functioning properly.");
             }
@@ -123,11 +115,6 @@ namespace BeverageVendingMachine.VendingMachines
             Console.WriteLine($"Amount of sugar: {AmountOfSugar}");
         }
 
-        public void Repair()
-        {
-            _currentPurchaseCount = 0;
-        }
-
         public virtual void Load()
         {
             NumberOfCups = MaxNumberOfCups;
@@ -137,16 +124,17 @@ namespace BeverageVendingMachine.VendingMachines
             AmountOfWater = MaxWaterCapacity;
         }
 
-        protected bool IsReadyToSell()
+        protected virtual bool IsReadyToSell()
         {
             bool readyToSellGoods = true;
 
-            if (_currentPurchaseCount == _maxPurchaseCountBeforeBreakingDown)
+            if (CurrentPurchaseCount == MaxPurchaseCountBeforeBreakingDown)
             {
                 readyToSellGoods = false;
             }
 
             return readyToSellGoods;
         }
+
     }
 }

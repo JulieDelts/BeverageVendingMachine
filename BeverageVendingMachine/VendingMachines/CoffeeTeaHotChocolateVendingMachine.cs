@@ -1,5 +1,4 @@
 ﻿using BeverageVendingMachine.DrinkModels;
-using BeverageVendingMachine.StorageUnits;
 
 namespace BeverageVendingMachine.VendingMachines
 {
@@ -9,61 +8,111 @@ namespace BeverageVendingMachine.VendingMachines
 
         public int NumberOfTeaBags { get; private set; }
 
-        public TeaTypesStorage TeaTypesStorageUnit { get; private set; }
+        public DrinkTypesStorage<Tea> AdditionalDrinkTypesStorage { get; private set; }
 
         public const double MaxCocoaCapacity = 500;
 
         public const int MaxNumberOfTeaBags = 40;
 
-        public CoffeeTeaHotChocolateVendingMachine(int id, CoffeeTypesStorage coffeeTypesStorage, int maxPurchaseCountBeforeBreakingDown, TeaTypesStorage teaTypesStorage): base(id, maxPurchaseCountBeforeBreakingDown, coffeeTypesStorage)
+        public CoffeeTeaHotChocolateVendingMachine(int id, DrinkTypesStorage<Coffee> drinkTypesStorage, int maxPurchaseCountBeforeBreakingDown, DrinkTypesStorage<Tea> teaTypesStorage) : base(id, maxPurchaseCountBeforeBreakingDown, drinkTypesStorage)
         {
             AmountOfCocoaPowder = 0;
             NumberOfTeaBags = 0;
-            TeaTypesStorageUnit = teaTypesStorage;
+            AdditionalDrinkTypesStorage = teaTypesStorage;
         }
 
-        public Tea? SellTea(string teaName)
+        public override Drink Sell(string drinkName)
         {
-            bool isReadyToSell = IsReadyToSell();
+            drinkName = drinkName.ToLower();
+            Dictionary<string, Coffee> coffeeTypes = DrinkTypesStorage.GetAllTypes();
+            Dictionary<string, Tea> teaTypes = AdditionalDrinkTypesStorage.GetAllTypes();
 
-            if (isReadyToSell)
+            Drink drink;
+
+            if (coffeeTypes.ContainsKey(drinkName))
             {
-                Dictionary<string, Tea> teaTypes = TeaTypesStorageUnit.GetAllTypes();
-
-                if (teaTypes.ContainsKey(teaName))
-                {
-                    Tea tea = teaTypes[teaName];
-
-                    if (NumberOfCups > 0
-                        && NumberOfTeaBags > 0
-                        && AmountOfSugar >= tea.Sugar
-                        && AmountOfWater >= tea.Water)
-                    {
-                        NumberOfCups--;
-                        NumberOfTeaBags--;
-                        AmountOfSugar -= tea.Sugar;
-                        AmountOfWater -= tea.Water;
-                        CurrentPurchaseCount++;
-
-                        return tea;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
-                else
-                {
-                    return null;
-                }
+                drink = base.Sell(drinkName);
+            }
+            else if (teaTypes.ContainsKey(drinkName))
+            {
+                drink = SellTea(drinkName);
+            }
+            else if (drinkName == "hot chocolate")
+            {
+                drink = SellHotChocolate();
             }
             else
             {
-                return null;
+                throw new ArgumentException("The drink is not present is the storages.");
+            }
+
+            return drink;
+        }
+
+        public override void DisplayAvailableDrinkTypes()
+        {
+            Dictionary<string, Coffee> coffeeTypes = DrinkTypesStorage.GetAllTypes();
+
+            Console.WriteLine("Available coffee types:");
+
+            foreach (string coffee in coffeeTypes.Keys)
+            {
+                Console.WriteLine(coffee);
+            }
+
+            Dictionary<string, Tea> teaTypes = AdditionalDrinkTypesStorage.GetAllTypes();
+
+            Console.WriteLine("Available tea types:");
+
+            foreach (string tea in teaTypes.Keys)
+            {
+                Console.WriteLine(tea);
+            }
+
+            Console.WriteLine("Hot chocolate");
+        }
+
+        public override void LogDiagnosticsInfo(string filePath)
+        {
+            base.LogDiagnosticsInfo(filePath);
+            using (StreamWriter streamWriter = new StreamWriter(filePath, true))
+            {
+                streamWriter.WriteLine($"Amount of cocoa powder: {AmountOfCocoaPowder}");
+                streamWriter.WriteLine($"Number of tea bags: {NumberOfTeaBags}");
             }
         }
 
-        public HotChocolate? SellHotChocolate()
+        public override void Load()
+        {
+            base.Load();
+            AmountOfCocoaPowder = MaxCocoaCapacity;
+            NumberOfTeaBags = MaxNumberOfTeaBags;
+        }
+
+        public void SetAdditionalDrinkTypesStorage(string filePath)
+        {
+            if (Path.Exists(filePath))
+            {
+                AdditionalDrinkTypesStorage = new DrinkTypesStorage<Tea>(filePath);
+            }
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is CoffeeTeaHotChocolateVendingMachine machine &&
+                   base.Equals(obj) &&
+                   Id == machine.Id &&
+                   EqualityComparer<DrinkTypesStorage<Coffee>>.Default.Equals(DrinkTypesStorage, machine.DrinkTypesStorage) &&
+                   MaxPurchaseCountBeforeBreakingDown == machine.MaxPurchaseCountBeforeBreakingDown &&
+                   EqualityComparer<DrinkTypesStorage<Tea>>.Default.Equals(AdditionalDrinkTypesStorage, machine.AdditionalDrinkTypesStorage);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+        
+        private HotChocolate SellHotChocolate()
         {
             bool isReadyToSell = IsReadyToSell();
 
@@ -88,54 +137,45 @@ namespace BeverageVendingMachine.VendingMachines
                 }
                 else
                 {
-                    return null;
+                    throw new ArgumentException("The drink is not available.");
                 }
             }
             else
             {
-                return null;
+                throw new Exception("The vending machine is broken.");
             }
         }
 
-        public override void DisplayAvailableDrinkTypes()
+        private Tea SellTea(string teaName)
         {
-            Dictionary<string, Coffee> coffeeTypes = CoffeeTypesStorageUnit.GetAllTypes();
+            bool isReadyToSell = IsReadyToSell();
 
-            Console.WriteLine("Available coffee types:");
-
-            foreach (string coffee in coffeeTypes.Keys)
+            if (isReadyToSell)
             {
-                Console.WriteLine(coffee);
+                Tea tea = AdditionalDrinkTypesStorage.GetType(teaName);
+
+                if (NumberOfCups > 0
+                    && NumberOfTeaBags > 0
+                    && AmountOfSugar >= tea.Sugar
+                    && AmountOfWater >= tea.Water)
+                {
+                    NumberOfCups--;
+                    NumberOfTeaBags--;
+                    AmountOfSugar -= tea.Sugar;
+                    AmountOfWater -= tea.Water;
+                    CurrentPurchaseCount++;
+
+                    return tea;
+                }
+                else
+                {
+                    throw new ArgumentException("The drink is not available.");
+                }
             }
-
-            Dictionary<string, Tea> teaTypes = TeaTypesStorageUnit.GetAllTypes();
-
-            Console.WriteLine("Available tea types:");
-
-            foreach (string tea in teaTypes.Keys)
+            else
             {
-                Console.WriteLine(tea);
+                throw new Exception("The vending machine is broken.");
             }
-
-            Console.WriteLine("Hot chocolate");
-        }
-
-        public override void ShowDiagnosticsInfo()
-        {
-            base.ShowDiagnosticsInfo();
-            Console.WriteLine($"Amount of cocoa powder: {AmountOfCocoaPowder}");
-            Console.WriteLine($"Number of tea bags: {NumberOfTeaBags}");
-        }
-
-        public override void Load()
-        {
-            NumberOfCups = MaxNumberOfCups;
-            AmountOfCoffeePowder = MaxCoffeePowderCapacity;
-            AmountOfMilkPowder = MaxMilkCapacity;
-            AmountOfSugar = MaxSugarCapacity;
-            AmountOfWater = MaxWaterCapacity;
-            AmountOfCocoaPowder = MaxCocoaCapacity;
-            NumberOfTeaBags = MaxNumberOfTeaBags;
         }
     }
 }

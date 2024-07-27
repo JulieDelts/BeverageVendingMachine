@@ -1,0 +1,1 @@
+{"orange juice":{"Type":"orange","FruitAmountNeeded":2,"Price":300,"Name":"orange juice"},"apple juice":{"Type":"apple","FruitAmountNeeded":2,"Price":300,"Name":"apple juice"},"pomegranate juice":{"Type":"pomegranate","FruitAmountNeeded":2,"Price":300,"Name":"pomegranate juice"},"grape juice":{"Type":"grape","FruitAmountNeeded":2,"Price":300,"Name":"grape juice"}}

@@ -1,87 +1,63 @@
 ﻿using BeverageVendingMachine.DrinkModels;
-using BeverageVendingMachine.StorageUnits;
 
 namespace BeverageVendingMachine.VendingMachines
 {
-    public class LemonadeVendingMachine: AbstractVendingMachine
+    public class LemonadeVendingMachine : AbstractVendingMachine<Lemonade>
     {
-        public LemonadeTypesStorage TypesStorageUnit { get; private set; }
-
         public Dictionary<string, int> LemonadeCansNumber { get; private set; }
 
         public int CurrentLoad { get; private set; }
 
         public const int MaxCapacity = 60;
 
-        public LemonadeVendingMachine(int id, int maxPurchaseCountBeforeBreakingDown, LemonadeTypesStorage typesStorage): base(id, maxPurchaseCountBeforeBreakingDown)
+        public LemonadeVendingMachine(int id, int maxPurchaseCountBeforeBreakingDown, DrinkTypesStorage<Lemonade> drinkTypesStorage) :
+            base(id, maxPurchaseCountBeforeBreakingDown, drinkTypesStorage)
         {
-            TypesStorageUnit = typesStorage;
             LemonadeCansNumber = new Dictionary<string, int>();
             CurrentLoad = 0;
         }
 
-        public Lemonade? Sell(string lemonadeType)
+        public override Drink Sell(string drinkType)
         {
-            lemonadeType = lemonadeType.ToLower();
-
-            bool readyToSell = IsReadyToSell();
-
-            if (readyToSell)
+            if (IsReadyToSell())
             {
-                if (LemonadeCansNumber.ContainsKey(lemonadeType) && LemonadeCansNumber[lemonadeType] >= 1)
+                drinkType = drinkType.ToLower();
+
+                if (LemonadeCansNumber.ContainsKey(drinkType) 
+                    && LemonadeCansNumber[drinkType] >= 1)
                 {
-                    Lemonade lemonade = TypesStorageUnit.GetType(lemonadeType);
+                    Lemonade lemonade = DrinkTypesStorage.GetType(drinkType);
                     CurrentLoad--;
-                    LemonadeCansNumber[lemonadeType]--;
+                    LemonadeCansNumber[drinkType]--;
                     CurrentPurchaseCount++;
 
                     return lemonade;
                 }
                 else
                 {
-                    return null;
+                    throw new ArgumentException("The drink is not available.");
                 }
             }
             else
             {
-                return null;
+                throw new Exception("The vending machine is broken.");
             }
         }
 
-        public void Load(string lemonadeType, int numberOfCans)
+        public override void Load()
         {
-            Dictionary<string, Lemonade> lemonadeTypes = TypesStorageUnit.GetAllTypes();
+            Dictionary<string, Lemonade> drinkTypes = DrinkTypesStorage.GetAllTypes();
+            int numberOfCansPerType = MaxCapacity / drinkTypes.Count;
 
-            lemonadeType = lemonadeType.ToLower();
-
-            if (lemonadeTypes.ContainsKey(lemonadeType))
+            foreach (var drinkType in drinkTypes)
             {
-                if (numberOfCans + CurrentLoad <= MaxCapacity)
+                if (MaxCapacity - CurrentLoad < numberOfCansPerType)
                 {
-                    if (LemonadeCansNumber.ContainsKey(lemonadeType))
-                    {
-                        LemonadeCansNumber[lemonadeType] += numberOfCans;
-                    }
-                    else
-                    {
-                        LemonadeCansNumber[lemonadeType] = numberOfCans;
-                    }
+                    break;
+                }
 
-                    CurrentLoad += numberOfCans;
-                }
-                else
-                {
-                    if (LemonadeCansNumber.ContainsKey(lemonadeType))
-                    {
-                        LemonadeCansNumber[lemonadeType] += MaxCapacity - CurrentLoad;
-                    }
-                    else
-                    {
-                        LemonadeCansNumber[lemonadeType] = MaxCapacity - CurrentLoad;
-                    }
-                    
-                    CurrentLoad = MaxCapacity;
-                }
+                LemonadeCansNumber[drinkType.Key] = numberOfCansPerType;
+                CurrentLoad += numberOfCansPerType;
             }
         }
 
@@ -95,37 +71,41 @@ namespace BeverageVendingMachine.VendingMachines
             }
         }
 
-        public void ShowDiagnosticsInfo()
+        public override void LogDiagnosticsInfo(string filePath)
         {
-            Console.WriteLine($"Vending machine {Id} diagnostics info:");
-
-            if (CurrentPurchaseCount < MaxPurchaseCountBeforeBreakingDown)
+            using (StreamWriter streamWriter = new StreamWriter(filePath, true))
             {
-                Console.WriteLine("The machine is functioning properly.");
-            }
-            else
-            {
-                Console.WriteLine("The machine is worn down.");
-            }
+                streamWriter.WriteLine($"Vending machine {Id} diagnostics info [{DateTime.Now}]:");
 
-            Console.WriteLine("Current load:");
+                if (CurrentPurchaseCount < MaxPurchaseCountBeforeBreakingDown)
+                {
+                    streamWriter.WriteLine("The machine is functioning properly.");
+                }
+                else
+                {
+                    streamWriter.WriteLine("The machine is worn down.");
+                }
 
-            foreach (string lemonadeType in LemonadeCansNumber.Keys)
-            {
-                Console.WriteLine($"{lemonadeType}: {LemonadeCansNumber[lemonadeType]}");
+                streamWriter.WriteLine("Current load:");
+
+                foreach (string lemonadeType in LemonadeCansNumber.Keys)
+                {
+                    streamWriter.WriteLine($"{lemonadeType}: {LemonadeCansNumber[lemonadeType]}");
+                }
             }
         }
 
-        private bool IsReadyToSell()
+        public override bool Equals(object? obj)
         {
-            bool readyToSellGoods = true;
+            return obj is LemonadeVendingMachine machine &&
+                   Id == machine.Id &&
+                   EqualityComparer<DrinkTypesStorage<Lemonade>>.Default.Equals(DrinkTypesStorage, machine.DrinkTypesStorage) &&
+                   MaxPurchaseCountBeforeBreakingDown == machine.MaxPurchaseCountBeforeBreakingDown;
+        }
 
-            if (CurrentPurchaseCount == MaxPurchaseCountBeforeBreakingDown)
-            {
-                readyToSellGoods = false;
-            }
-
-            return readyToSellGoods;
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

@@ -7,38 +7,28 @@ using BeverageVendingMachine.DrinkModels;
 
 namespace BeverageVendingMachine.VendingMachines
 {
-    public abstract class AbstractVendingMachine<T> where T : Drink
+    public abstract class AbstractVendingMachine
     {
         public int Id { get; init; }
-
-        public DrinkTypesStorage<T> DrinkTypesStorage { get; protected set; }
 
         public int CurrentPurchaseCount { get; protected set; }
 
         public readonly int MaxPurchaseCountBeforeBreakingDown;
 
-        public AbstractVendingMachine(int id, int maxPurchaseCountBeforeBreakingDown, DrinkTypesStorage<T> drinkTypesStorage)
+        public AbstractVendingMachine(int id, int maxPurchaseCountBeforeBreakingDown)
         {
             Id = id;
             MaxPurchaseCountBeforeBreakingDown = maxPurchaseCountBeforeBreakingDown;
             CurrentPurchaseCount = 0;
-            DrinkTypesStorage = drinkTypesStorage;
+
         }
+
+        public abstract AbstractDrink Sell(string drinkName);
 
         public void Repair()
         {
             CurrentPurchaseCount = 0;
         }
-
-        public void SetDrinkTypesStorage(string path)
-        {
-            if (Path.Exists(path))
-            {
-                DrinkTypesStorage = new DrinkTypesStorage<T>(path);
-            }
-        }
-
-        public abstract Drink Sell(string type);
 
         public abstract void Load();
 

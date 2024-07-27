@@ -4,7 +4,7 @@ using BeverageVendingMachine.DrinkModels;
 
 namespace BeverageVendingMachine
 {
-    public class DrinkTypesStorage<T> where T: Drink
+    public class DrinkTypesStorage<T> where T: AbstractDrink
     {
         private readonly string _storagePath;
 

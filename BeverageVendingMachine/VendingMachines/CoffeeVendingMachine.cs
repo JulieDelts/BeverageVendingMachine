@@ -2,9 +2,9 @@
 
 namespace BeverageVendingMachine.VendingMachines
 {
-    public class CoffeeVendingMachine : AbstractVendingMachine<Coffee>
+    public class CoffeeVendingMachine: AbstractVendingMachine
     {
-        public int NumberOfCups { get; protected set; }
+        public DrinkTypesStorage<Coffee> DrinkTypesStorage { get; protected set; }
 
         public double AmountOfCoffeePowder { get; protected set; }
 
@@ -13,6 +13,8 @@ namespace BeverageVendingMachine.VendingMachines
         public double AmountOfSugar { get; protected set; }
 
         public double AmountOfWater { get; protected set; }
+
+        public int NumberOfCups { get; protected set; }
 
         public const int MaxNumberOfCups = 40;
 
@@ -25,8 +27,9 @@ namespace BeverageVendingMachine.VendingMachines
         public const double MaxWaterCapacity = 2000;
 
         public CoffeeVendingMachine(int id, int maxPurchaseCountBeforeBreakingDown, DrinkTypesStorage<Coffee> drinkTypesStorage) :
-            base(id, maxPurchaseCountBeforeBreakingDown, drinkTypesStorage)
+            base(id, maxPurchaseCountBeforeBreakingDown)
         {
+            DrinkTypesStorage = drinkTypesStorage;
             NumberOfCups = 0;
             AmountOfCoffeePowder = 0;
             AmountOfMilkPowder = 0;
@@ -34,15 +37,23 @@ namespace BeverageVendingMachine.VendingMachines
             AmountOfWater = 0;
         }
 
-        public override Drink Sell(string drinkType)
+        public void SetDrinkTypesStorage(string path)
         {
-            drinkType = drinkType.ToLower();
+            if (Path.Exists(path))
+            {
+                DrinkTypesStorage = new DrinkTypesStorage<Coffee>(path);
+            }
+        }
+
+        public override AbstractDrink Sell(string drinkName)
+        {
+            drinkName = drinkName.ToLower();
 
             bool isReadyToSell = IsReadyToSell();
 
             if (isReadyToSell)
             {
-                Coffee coffee = DrinkTypesStorage.GetType(drinkType);
+                Coffee coffee = DrinkTypesStorage.GetType(drinkName);
 
                 if (NumberOfCups > 0
                     && AmountOfCoffeePowder >= coffee.CoffeePowder
@@ -68,6 +79,15 @@ namespace BeverageVendingMachine.VendingMachines
             {
                 throw new Exception("The vending machine is broken.");
             }
+        }
+
+        public override void Load()
+        {
+            NumberOfCups = MaxNumberOfCups;
+            AmountOfCoffeePowder = MaxCoffeePowderCapacity;
+            AmountOfMilkPowder = MaxMilkCapacity;
+            AmountOfSugar = MaxSugarCapacity;
+            AmountOfWater = MaxWaterCapacity;
         }
 
         public override void DisplayAvailableDrinkTypes()
@@ -104,15 +124,6 @@ namespace BeverageVendingMachine.VendingMachines
                 streamWriter.WriteLine($"Amount of water: {AmountOfWater}");
                 streamWriter.WriteLine($"Amount of sugar: {AmountOfSugar}");
             }
-        }
-
-        public override void Load()
-        {
-            NumberOfCups = MaxNumberOfCups;
-            AmountOfCoffeePowder = MaxCoffeePowderCapacity;
-            AmountOfMilkPowder = MaxMilkCapacity;
-            AmountOfSugar = MaxSugarCapacity;
-            AmountOfWater = MaxWaterCapacity;
         }
 
         public override bool Equals(object? obj)

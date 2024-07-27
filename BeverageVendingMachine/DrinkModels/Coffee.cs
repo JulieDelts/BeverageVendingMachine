@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BeverageVendingMachine.DrinkModels
 {
-    public class Coffee: Drink
+    public class Coffee: AbstractDrink
     {
         public double Sugar { get; set; }
 

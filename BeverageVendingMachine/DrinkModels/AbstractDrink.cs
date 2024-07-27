@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BeverageVendingMachine.DrinkModels
 {
-    public abstract class Drink
+    public abstract class AbstractDrink
     {
         public virtual string Name { get; set; } = string.Empty;
 

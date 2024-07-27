@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BeverageVendingMachine.DrinkModels
 {
-    public class Lemonade: Drink
+    public class Lemonade: AbstractDrink
     {
         bool IsSparkling { get; set; }
     }

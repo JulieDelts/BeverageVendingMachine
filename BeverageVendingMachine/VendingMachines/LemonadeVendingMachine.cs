@@ -2,33 +2,36 @@
 
 namespace BeverageVendingMachine.VendingMachines
 {
-    public class LemonadeVendingMachine : AbstractVendingMachine<Lemonade>
+    public class LemonadeVendingMachine: AbstractVendingMachine
     {
-        public Dictionary<string, int> LemonadeCansNumber { get; private set; }
+        public DrinkTypesStorage<Lemonade> DrinkTypesStorage { get; private set; }
 
         public int CurrentLoad { get; private set; }
 
         public const int MaxCapacity = 60;
 
+        private Dictionary<string, int> _lemonadeCansNumber;
+
         public LemonadeVendingMachine(int id, int maxPurchaseCountBeforeBreakingDown, DrinkTypesStorage<Lemonade> drinkTypesStorage) :
-            base(id, maxPurchaseCountBeforeBreakingDown, drinkTypesStorage)
+            base(id, maxPurchaseCountBeforeBreakingDown)
         {
-            LemonadeCansNumber = new Dictionary<string, int>();
+            _lemonadeCansNumber = new Dictionary<string, int>();
+            DrinkTypesStorage = drinkTypesStorage;
             CurrentLoad = 0;
         }
 
-        public override Drink Sell(string drinkType)
+        public override AbstractDrink Sell(string drinkName)
         {
             if (IsReadyToSell())
             {
-                drinkType = drinkType.ToLower();
+                drinkName = drinkName.ToLower();
 
-                if (LemonadeCansNumber.ContainsKey(drinkType) 
-                    && LemonadeCansNumber[drinkType] >= 1)
+                if (_lemonadeCansNumber.ContainsKey(drinkName) 
+                    && _lemonadeCansNumber[drinkName] >= 1)
                 {
-                    Lemonade lemonade = DrinkTypesStorage.GetType(drinkType);
+                    Lemonade lemonade = DrinkTypesStorage.GetType(drinkName);
                     CurrentLoad--;
-                    LemonadeCansNumber[drinkType]--;
+                    _lemonadeCansNumber[drinkName]--;
                     CurrentPurchaseCount++;
 
                     return lemonade;
@@ -56,7 +59,7 @@ namespace BeverageVendingMachine.VendingMachines
                     break;
                 }
 
-                LemonadeCansNumber[drinkType.Key] = numberOfCansPerType;
+                _lemonadeCansNumber[drinkType.Key] = numberOfCansPerType;
                 CurrentLoad += numberOfCansPerType;
             }
         }
@@ -65,7 +68,7 @@ namespace BeverageVendingMachine.VendingMachines
         {
             Console.WriteLine("Available lemonade types:");
 
-            foreach (string lemonade in LemonadeCansNumber.Keys)
+            foreach (string lemonade in _lemonadeCansNumber.Keys)
             {
                 Console.WriteLine(lemonade);
             }
@@ -88,10 +91,18 @@ namespace BeverageVendingMachine.VendingMachines
 
                 streamWriter.WriteLine("Current load:");
 
-                foreach (string lemonadeType in LemonadeCansNumber.Keys)
+                foreach (string lemonadeType in _lemonadeCansNumber.Keys)
                 {
-                    streamWriter.WriteLine($"{lemonadeType}: {LemonadeCansNumber[lemonadeType]}");
+                    streamWriter.WriteLine($"{lemonadeType}: {_lemonadeCansNumber[lemonadeType]}");
                 }
+            }
+        }
+
+        public void SetDrinkTypesStorage(string path)
+        {
+            if (Path.Exists(path))
+            {
+                DrinkTypesStorage = new DrinkTypesStorage<Lemonade>(path);
             }
         }
 

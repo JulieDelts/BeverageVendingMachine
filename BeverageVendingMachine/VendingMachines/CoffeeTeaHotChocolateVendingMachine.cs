@@ -4,11 +4,11 @@ namespace BeverageVendingMachine.VendingMachines
 {
     public class CoffeeTeaHotChocolateVendingMachine : CoffeeVendingMachine
     {
+        public DrinkTypesStorage<Tea> AdditionalDrinkTypesStorage { get; private set; }
+
         public double AmountOfCocoaPowder { get; private set; }
 
         public int NumberOfTeaBags { get; private set; }
-
-        public DrinkTypesStorage<Tea> AdditionalDrinkTypesStorage { get; private set; }
 
         public const double MaxCocoaCapacity = 500;
 
@@ -21,13 +21,13 @@ namespace BeverageVendingMachine.VendingMachines
             AdditionalDrinkTypesStorage = teaTypesStorage;
         }
 
-        public override Drink Sell(string drinkName)
+        public override AbstractDrink Sell(string drinkName)
         {
             drinkName = drinkName.ToLower();
             Dictionary<string, Coffee> coffeeTypes = DrinkTypesStorage.GetAllTypes();
             Dictionary<string, Tea> teaTypes = AdditionalDrinkTypesStorage.GetAllTypes();
 
-            Drink drink;
+            AbstractDrink drink;
 
             if (coffeeTypes.ContainsKey(drinkName))
             {

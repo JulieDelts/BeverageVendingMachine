@@ -1,13 +1,12 @@
-﻿using System;
-using BeverageVendingMachine.DrinkModels;
+﻿using BeverageVendingMachine.DrinkModels;
 
 namespace BeverageVendingMachine.VendingMachines
 {
-    public class JuiceVendingMachine : AbstractVendingMachine<Juice>
+    public class JuiceVendingMachine : AbstractVendingMachine
     {
-        public int CurrentLoad { get; private set; }
+        public DrinkTypesStorage<Juice> DrinkTypesStorage { get; private set; }
 
-        public Dictionary<string, int> FruitAmount { get; private set; }
+        public int CurrentLoad { get; private set; }
 
         public int NumberOfCups { get; private set; }
 
@@ -17,27 +16,30 @@ namespace BeverageVendingMachine.VendingMachines
 
         public const int MaxCapacity = 50;
 
-        public JuiceVendingMachine(int id, int maxPurchaseCountBeforeBreakingDown, DrinkTypesStorage<Juice> drinkTypesStorage):
-            base(id, maxPurchaseCountBeforeBreakingDown, drinkTypesStorage)
+        private Dictionary<string, int> _fruitAmount;
+
+        public JuiceVendingMachine(int id, int maxPurchaseCountBeforeBreakingDown, DrinkTypesStorage<Juice> drinkTypesStorage) :
+            base(id, maxPurchaseCountBeforeBreakingDown)
         {
-            FruitAmount = new Dictionary<string, int>();
+            _fruitAmount = new Dictionary<string, int>();
+            DrinkTypesStorage = drinkTypesStorage;
             CurrentLoad = 0;
             NumberOfCups = 0;
         }
 
-        public override Drink Sell(string drinkType)
+        public override AbstractDrink Sell(string drinkName)
         {
             if (IsReadyToSell())
             {
-                drinkType = drinkType.ToLower();
-                Juice juice = DrinkTypesStorage.GetType(drinkType);
+                drinkName = drinkName.ToLower();
+                Juice juice = DrinkTypesStorage.GetType(drinkName);
 
-                if (FruitAmount.ContainsKey(drinkType)
-                && FruitAmount[drinkType] >= juice.FruitAmountNeeded
+                if (_fruitAmount.ContainsKey(drinkName)
+                && _fruitAmount[drinkName] >= juice.FruitAmountNeeded
                 && NumberOfCups > 0)
                 {
                     CurrentLoad -= juice.FruitAmountNeeded;
-                    FruitAmount[drinkType] -= juice.FruitAmountNeeded;
+                    _fruitAmount[drinkName] -= juice.FruitAmountNeeded;
                     NumberOfCups--;
                     CurrentPurchaseCount++;
 
@@ -54,16 +56,6 @@ namespace BeverageVendingMachine.VendingMachines
             }
         }
 
-        public override void DisplayAvailableDrinkTypes()
-        {
-            Console.WriteLine("Available juice types:");
-
-            foreach (string fruit in FruitAmount.Keys)
-            {
-                Console.WriteLine(fruit);
-            }
-        }
-
         public override void Load()
         {
             NumberOfCups = MaxCapacity;
@@ -77,11 +69,21 @@ namespace BeverageVendingMachine.VendingMachines
                     break;
                 }
 
-                FruitAmount[drinkType.Key] = FruitAmountPerType;
+                _fruitAmount[drinkType.Key] = FruitAmountPerType;
                 CurrentLoad += FruitAmountPerType;
             }
 
             TimeOfLastUpdate = DateTime.Now;
+        }
+
+        public override void DisplayAvailableDrinkTypes()
+        {
+            Console.WriteLine("Available juice types:");
+
+            foreach (string fruit in _fruitAmount.Keys)
+            {
+                Console.WriteLine(fruit);
+            }
         }
 
         public override void LogDiagnosticsInfo(string filePath)
@@ -112,12 +114,20 @@ namespace BeverageVendingMachine.VendingMachines
 
                 streamWriter.WriteLine("Current load:");
 
-                foreach (string juiceType in FruitAmount.Keys)
+                foreach (string juiceType in _fruitAmount.Keys)
                 {
-                    streamWriter.WriteLine($"{juiceType}: {FruitAmount[juiceType]}");
+                    streamWriter.WriteLine($"{juiceType}: {_fruitAmount[juiceType]}");
                 }
 
                 streamWriter.WriteLine($"NumberOfCups: {NumberOfCups}");
+            }
+        }
+
+        public void SetDrinkTypesStorage(string path)
+        {
+            if (Path.Exists(path))
+            {
+                DrinkTypesStorage = new DrinkTypesStorage<Juice>(path);
             }
         }
 

@@ -100,13 +100,20 @@ namespace BeverageVendingMachine.VendingMachines
         public override bool Equals(object? obj)
         {
             return obj is CoffeeTeaHotChocolateVendingMachine machine &&
-                   base.Equals(obj) &&
                    Id == machine.Id &&
-                   EqualityComparer<DrinkTypesStorage<Coffee>>.Default.Equals(DrinkTypesStorage, machine.DrinkTypesStorage) &&
+                   CurrentPurchaseCount == machine.CurrentPurchaseCount &&
                    MaxPurchaseCountBeforeBreakingDown == machine.MaxPurchaseCountBeforeBreakingDown &&
-                   EqualityComparer<DrinkTypesStorage<Tea>>.Default.Equals(AdditionalDrinkTypesStorage, machine.AdditionalDrinkTypesStorage);
+                   EqualityComparer<DrinkTypesStorage<Coffee>>.Default.Equals(DrinkTypesStorage, machine.DrinkTypesStorage) &&
+                   AmountOfCoffeePowder == machine.AmountOfCoffeePowder &&
+                   AmountOfMilkPowder == machine.AmountOfMilkPowder &&
+                   AmountOfSugar == machine.AmountOfSugar &&
+                   AmountOfWater == machine.AmountOfWater &&
+                   NumberOfCups == machine.NumberOfCups &&
+                   EqualityComparer<DrinkTypesStorage<Tea>>.Default.Equals(AdditionalDrinkTypesStorage, machine.AdditionalDrinkTypesStorage) &&
+                   AmountOfCocoaPowder == machine.AmountOfCocoaPowder &&
+                   NumberOfTeaBags == machine.NumberOfTeaBags;
         }
-
+        
         public override int GetHashCode()
         {
             return base.GetHashCode();
@@ -152,7 +159,7 @@ namespace BeverageVendingMachine.VendingMachines
 
             if (isReadyToSell)
             {
-                Tea tea = AdditionalDrinkTypesStorage.GetType(teaName);
+                Tea tea = AdditionalDrinkTypesStorage.Get(teaName);
 
                 if (NumberOfCups > 0
                     && NumberOfTeaBags > 0
@@ -177,5 +184,6 @@ namespace BeverageVendingMachine.VendingMachines
                 throw new Exception("The vending machine is broken.");
             }
         }
+
     }
 }

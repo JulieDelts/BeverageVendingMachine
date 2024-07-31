@@ -29,7 +29,7 @@ namespace BeverageVendingMachine.VendingMachines
                 if (_lemonadeCansNumber.ContainsKey(drinkName) 
                     && _lemonadeCansNumber[drinkName] >= 1)
                 {
-                    Lemonade lemonade = DrinkTypesStorage.GetType(drinkName);
+                    Lemonade lemonade = DrinkTypesStorage.Get(drinkName);
                     CurrentLoad--;
                     _lemonadeCansNumber[drinkName]--;
                     CurrentPurchaseCount++;
@@ -108,15 +108,34 @@ namespace BeverageVendingMachine.VendingMachines
 
         public override bool Equals(object? obj)
         {
-            return obj is LemonadeVendingMachine machine &&
-                   Id == machine.Id &&
-                   EqualityComparer<DrinkTypesStorage<Lemonade>>.Default.Equals(DrinkTypesStorage, machine.DrinkTypesStorage) &&
-                   MaxPurchaseCountBeforeBreakingDown == machine.MaxPurchaseCountBeforeBreakingDown;
+            var machine = obj as LemonadeVendingMachine;
+
+            if (machine is null)
+            {
+                return false;
+            }
+
+            if (!(Id == machine.Id &&
+                  CurrentPurchaseCount == machine.CurrentPurchaseCount &&
+                  MaxPurchaseCountBeforeBreakingDown == machine.MaxPurchaseCountBeforeBreakingDown &&
+                  EqualityComparer<DrinkTypesStorage<Lemonade>>.Default.Equals(DrinkTypesStorage, machine.DrinkTypesStorage) &&
+                  CurrentLoad == machine.CurrentLoad))
+            {
+                return false;
+            }
+
+            if (_lemonadeCansNumber.Count != machine._lemonadeCansNumber.Count || !_lemonadeCansNumber.OrderBy(kvp => kvp.Key).SequenceEqual(machine._lemonadeCansNumber.OrderBy(kvp => kvp.Key)))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public override int GetHashCode()
         {
             return base.GetHashCode();
         }
+
     }
 }

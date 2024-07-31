@@ -11,16 +11,15 @@ namespace BeverageVendingMachine.VendingMachines
     {
         public int Id { get; init; }
 
-        public int CurrentPurchaseCount { get; protected set; }
+        public int CurrentPurchaseCount { get; set; }
 
-        public readonly int MaxPurchaseCountBeforeBreakingDown;
+        public int MaxPurchaseCountBeforeBreakingDown;
 
         public AbstractVendingMachine(int id, int maxPurchaseCountBeforeBreakingDown)
         {
             Id = id;
             MaxPurchaseCountBeforeBreakingDown = maxPurchaseCountBeforeBreakingDown;
             CurrentPurchaseCount = 0;
-
         }
 
         public abstract AbstractDrink Sell(string drinkName);
@@ -52,6 +51,5 @@ namespace BeverageVendingMachine.VendingMachines
 
             return readyToSellGoods;
         }
-
     }
 }

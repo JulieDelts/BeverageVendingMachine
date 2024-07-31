@@ -32,7 +32,7 @@ namespace BeverageVendingMachine.VendingMachines
             if (IsReadyToSell())
             {
                 drinkName = drinkName.ToLower();
-                Juice juice = DrinkTypesStorage.GetType(drinkName);
+                Juice juice = DrinkTypesStorage.Get(drinkName);
 
                 if (_fruitAmount.ContainsKey(drinkName)
                 && _fruitAmount[drinkName] >= juice.FruitAmountNeeded
@@ -145,12 +145,31 @@ namespace BeverageVendingMachine.VendingMachines
 
         public override bool Equals(object? obj)
         {
-            return obj is JuiceVendingMachine machine &&
-                   Id == machine.Id &&
-                   EqualityComparer<DrinkTypesStorage<Juice>>.Default.Equals(DrinkTypesStorage, machine.DrinkTypesStorage) &&
-                   MaxPurchaseCountBeforeBreakingDown == machine.MaxPurchaseCountBeforeBreakingDown;
-        }
+            var machine = obj as JuiceVendingMachine;
 
+            if (machine is null)
+            {
+                return false;
+            }
+
+            if (!(Id == machine.Id &&
+                  CurrentPurchaseCount == machine.CurrentPurchaseCount &&
+                  MaxPurchaseCountBeforeBreakingDown == machine.MaxPurchaseCountBeforeBreakingDown &&
+                  EqualityComparer<DrinkTypesStorage<Juice>>.Default.Equals(DrinkTypesStorage, machine.DrinkTypesStorage) &&
+                  CurrentLoad == machine.CurrentLoad &&
+                  NumberOfCups == machine.NumberOfCups))
+            {
+                return false;
+            }
+
+            if (_fruitAmount.Count != machine._fruitAmount.Count || !_fruitAmount.OrderBy(kvp => kvp.Key).SequenceEqual(machine._fruitAmount.OrderBy(kvp => kvp.Key)))
+            { 
+                return false;
+            }
+
+            return true;
+        }
+   
         public override int GetHashCode()
         {
             return base.GetHashCode();

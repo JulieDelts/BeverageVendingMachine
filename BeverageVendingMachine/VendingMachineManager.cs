@@ -23,7 +23,7 @@ namespace BeverageVendingMachine
             _vendingMachines = new List<AbstractVendingMachine>(abstractVendingMachines);
         }
 
-        public AbstractVendingMachine GetById(int id)
+        public AbstractVendingMachine Get(int id)
         {
             AbstractVendingMachine? vendingMachine = null;
 
@@ -46,7 +46,7 @@ namespace BeverageVendingMachine
 
         public void Add(AbstractVendingMachine vendingMachine)
         {
-            _vendingMachines.Add(vendingMachine); 
+            _vendingMachines.Add(vendingMachine);
         }
 
         public void Add(List<AbstractVendingMachine> abstractVendingMachines)
@@ -56,12 +56,8 @@ namespace BeverageVendingMachine
 
         public void RemoveById(int id)
         {
-            AbstractVendingMachine? machine = GetById(id);
-
-            if (machine is not null)
-            {
-                _vendingMachines.Remove(machine);
-            }
+            AbstractVendingMachine machine = Get(id);
+            _vendingMachines.Remove(machine);
         }
 
         public void LoadAll()
@@ -86,6 +82,45 @@ namespace BeverageVendingMachine
             {
                 machine.LogDiagnosticsInfo(filePath);
             }
+        }
+
+        public override string ToString()
+        {
+            string storage = string.Empty;
+
+            foreach (AbstractVendingMachine machine in _vendingMachines)
+            {
+                storage += $"{machine.Id} ";
+            }
+
+            return storage;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            //через ToString() еще
+
+            var other = obj as VendingMachineManager;
+
+            if (other is null)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < _vendingMachines.Count; i++)
+            {
+                if (!_vendingMachines[i].Equals(other._vendingMachines[i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

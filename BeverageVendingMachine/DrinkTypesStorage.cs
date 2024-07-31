@@ -26,14 +26,7 @@ namespace BeverageVendingMachine
 
                 Dictionary<string, T> drinkTypes;
 
-                if (!string.IsNullOrEmpty(collection))
-                {
-                    drinkTypes = JsonSerializer.Deserialize<Dictionary<string, T>>(collection) ?? new Dictionary<string, T>();
-                }
-                else
-                {
-                    drinkTypes = new Dictionary<string, T>();
-                }
+                drinkTypes = JsonSerializer.Deserialize<Dictionary<string, T>>(collection) ?? new Dictionary<string, T>();
 
                 return drinkTypes;
             }
@@ -43,13 +36,13 @@ namespace BeverageVendingMachine
             }
         }
 
-        public T GetType(string type)
+        public T Get(string drinkType)
         {
             Dictionary<string, T> drinkTypes = GetAllTypes();
 
-            if (drinkTypes.ContainsKey(type))
+            if (drinkTypes.ContainsKey(drinkType))
             {
-                return drinkTypes[type];
+                return drinkTypes[drinkType];
             }
             else
             {
@@ -57,11 +50,11 @@ namespace BeverageVendingMachine
             }
         }
 
-        public void Add(T drinkType)
+        public void Add(T drink)
         {
             Dictionary<string, T> drinkTypes = GetAllTypes();
 
-            drinkTypes.Add(drinkType.Name, drinkType);
+            drinkTypes.Add(drink.Name, drink);
 
             Save(drinkTypes);
         }

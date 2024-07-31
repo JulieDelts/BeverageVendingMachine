@@ -53,7 +53,7 @@ namespace BeverageVendingMachine.VendingMachines
 
             if (isReadyToSell)
             {
-                Coffee coffee = DrinkTypesStorage.GetType(drinkName);
+                Coffee coffee = DrinkTypesStorage.Get(drinkName);
 
                 if (NumberOfCups > 0
                     && AmountOfCoffeePowder >= coffee.CoffeePowder
@@ -130,10 +130,16 @@ namespace BeverageVendingMachine.VendingMachines
         {
             return obj is CoffeeVendingMachine machine &&
                    Id == machine.Id &&
+                   CurrentPurchaseCount == machine.CurrentPurchaseCount &&
+                   MaxPurchaseCountBeforeBreakingDown == machine.MaxPurchaseCountBeforeBreakingDown &&
                    EqualityComparer<DrinkTypesStorage<Coffee>>.Default.Equals(DrinkTypesStorage, machine.DrinkTypesStorage) &&
-                   MaxPurchaseCountBeforeBreakingDown == machine.MaxPurchaseCountBeforeBreakingDown;
+                   AmountOfCoffeePowder == machine.AmountOfCoffeePowder &&
+                   AmountOfMilkPowder == machine.AmountOfMilkPowder &&
+                   AmountOfSugar == machine.AmountOfSugar &&
+                   AmountOfWater == machine.AmountOfWater &&
+                   NumberOfCups == machine.NumberOfCups;
         }
-
+        
         public override int GetHashCode()
         {
             return base.GetHashCode();

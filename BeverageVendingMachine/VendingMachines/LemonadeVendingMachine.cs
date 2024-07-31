@@ -12,13 +12,27 @@ namespace BeverageVendingMachine.VendingMachines
 
         private Dictionary<string, int> _lemonadeCansNumber;
 
-        public LemonadeVendingMachine(int id, int maxPurchaseCountBeforeBreakingDown, DrinkTypesStorage<Lemonade> drinkTypesStorage) :
+        public LemonadeVendingMachine(int id,
+            int maxPurchaseCountBeforeBreakingDown,
+            DrinkTypesStorage<Lemonade> drinkTypesStorage) :
             base(id, maxPurchaseCountBeforeBreakingDown)
         {
             _lemonadeCansNumber = new Dictionary<string, int>();
             DrinkTypesStorage = drinkTypesStorage;
             CurrentLoad = 0;
         }
+
+        public LemonadeVendingMachine(int id,
+            int maxPurchaseCountBeforeBreakingDown,
+            DrinkTypesStorage<Lemonade> drinkTypesStorage,
+            int currentLoad,
+            Dictionary<string, int> lemonadeCansNumber):
+            base(id, maxPurchaseCountBeforeBreakingDown)
+        {
+            DrinkTypesStorage = drinkTypesStorage;
+            CurrentLoad = currentLoad;
+            _lemonadeCansNumber = lemonadeCansNumber;
+        }   
 
         public override AbstractDrink Sell(string drinkName)
         {

@@ -2,8 +2,9 @@ using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using BeverageVendingMachine.DrinkModels;
 using BeverageVendingMachine.VendingMachines;
+using BeverageVendingMachine.Test.VendingMachineManagerTestCaseSource;
 
-namespace BeverageVendingMachine.Test
+namespace BeverageVendingMachine.Test.Tests
 {
     public class VendingMachineManagerTests
     {
@@ -20,7 +21,7 @@ namespace BeverageVendingMachine.Test
         [TestCaseSource(typeof(GetWhenNoMachineThenExceptionTestCaseSource))]
         public void GetWhenNoMachineThenException(int id, VendingMachineManager manager)
         {
-            Assert.Throws<ArgumentException>(() =>manager.Get(id));
+            Assert.Throws<ArgumentException>(() => manager.Get(id));
         }
 
         [TestCaseSource(typeof(AddTestCaseSource))]
@@ -45,7 +46,7 @@ namespace BeverageVendingMachine.Test
 
         [TestCaseSource(typeof(RemoveTestCaseSource))]
         public void RemoveTest(int id, VendingMachineManager manager, VendingMachineManager expected)
-        { 
+        {
             manager.RemoveById(id);
 
             var actual = manager;

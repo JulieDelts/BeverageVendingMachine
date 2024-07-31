@@ -26,7 +26,9 @@ namespace BeverageVendingMachine.VendingMachines
 
         public const double MaxWaterCapacity = 2000;
 
-        public CoffeeVendingMachine(int id, int maxPurchaseCountBeforeBreakingDown, DrinkTypesStorage<Coffee> drinkTypesStorage) :
+        public CoffeeVendingMachine(int id,
+            int maxPurchaseCountBeforeBreakingDown,
+            DrinkTypesStorage<Coffee> drinkTypesStorage) :
             base(id, maxPurchaseCountBeforeBreakingDown)
         {
             DrinkTypesStorage = drinkTypesStorage;
@@ -37,12 +39,22 @@ namespace BeverageVendingMachine.VendingMachines
             AmountOfWater = 0;
         }
 
-        public void SetDrinkTypesStorage(string path)
+        public CoffeeVendingMachine(int id, 
+            int maxPurchaseCountBeforeBreakingDown, 
+            DrinkTypesStorage<Coffee> drinkTypesStorage,
+            double amountOfCoffeePowder, 
+            double amountOfMilkPowder,
+            double amountOfSugar,
+            double amountOfWater,
+            int numberOfCups):
+            base(id, maxPurchaseCountBeforeBreakingDown)
         {
-            if (Path.Exists(path))
-            {
-                DrinkTypesStorage = new DrinkTypesStorage<Coffee>(path);
-            }
+            DrinkTypesStorage = drinkTypesStorage;
+            AmountOfCoffeePowder = amountOfCoffeePowder;
+            AmountOfMilkPowder = amountOfMilkPowder;
+            AmountOfSugar = amountOfSugar;
+            AmountOfWater = amountOfWater;
+            NumberOfCups = numberOfCups;
         }
 
         public override AbstractDrink Sell(string drinkName)
@@ -123,6 +135,14 @@ namespace BeverageVendingMachine.VendingMachines
                 streamWriter.WriteLine($"Amount of milk powder: {AmountOfMilkPowder}");
                 streamWriter.WriteLine($"Amount of water: {AmountOfWater}");
                 streamWriter.WriteLine($"Amount of sugar: {AmountOfSugar}");
+            }
+        }
+
+        public void SetDrinkTypesStorage(string path)
+        {
+            if (Path.Exists(path))
+            {
+                DrinkTypesStorage = new DrinkTypesStorage<Coffee>(path);
             }
         }
 

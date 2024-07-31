@@ -14,11 +14,39 @@ namespace BeverageVendingMachine.VendingMachines
 
         public const int MaxNumberOfTeaBags = 40;
 
-        public CoffeeTeaHotChocolateVendingMachine(int id, DrinkTypesStorage<Coffee> drinkTypesStorage, int maxPurchaseCountBeforeBreakingDown, DrinkTypesStorage<Tea> teaTypesStorage) : base(id, maxPurchaseCountBeforeBreakingDown, drinkTypesStorage)
+        public CoffeeTeaHotChocolateVendingMachine(int id,
+            DrinkTypesStorage<Coffee> drinkTypesStorage,
+            int maxPurchaseCountBeforeBreakingDown,
+            DrinkTypesStorage<Tea> teaTypesStorage) : base(id, maxPurchaseCountBeforeBreakingDown, drinkTypesStorage)
         {
             AmountOfCocoaPowder = 0;
             NumberOfTeaBags = 0;
             AdditionalDrinkTypesStorage = teaTypesStorage;
+        }
+
+        public CoffeeTeaHotChocolateVendingMachine(int id,
+            DrinkTypesStorage<Coffee> drinkTypesStorage,
+            int maxPurchaseCountBeforeBreakingDown,
+            DrinkTypesStorage<Tea> additionalDrinkTypesStorage,
+            double amountOfCocoaPowder,
+            double amountOfMilkPowder,
+            double amountOfCoffeePowder,
+            double amountOfSugar,
+            double amountOfWater,
+            int numberOfCups,
+            int numberOfTeaBags):
+            base(id,
+                maxPurchaseCountBeforeBreakingDown,
+                drinkTypesStorage,
+                amountOfCoffeePowder, 
+                amountOfMilkPowder,
+                amountOfSugar,
+                amountOfWater,
+                numberOfCups )
+        {
+            AdditionalDrinkTypesStorage = additionalDrinkTypesStorage;
+            AmountOfCocoaPowder = amountOfCocoaPowder;
+            NumberOfTeaBags = numberOfTeaBags;
         }
 
         public override AbstractDrink Sell(string drinkName)

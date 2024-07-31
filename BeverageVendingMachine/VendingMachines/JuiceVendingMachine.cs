@@ -14,17 +14,33 @@ namespace BeverageVendingMachine.VendingMachines
 
         public DateTime InteractionTime { get; set; }
 
-        public const int MaxCapacity = 50;
+        public const int MaxCapacity = 60;
 
         private Dictionary<string, int> _fruitAmount;
 
-        public JuiceVendingMachine(int id, int maxPurchaseCountBeforeBreakingDown, DrinkTypesStorage<Juice> drinkTypesStorage) :
+        public JuiceVendingMachine(int id,
+            int maxPurchaseCountBeforeBreakingDown,
+            DrinkTypesStorage<Juice> drinkTypesStorage) :
             base(id, maxPurchaseCountBeforeBreakingDown)
         {
             _fruitAmount = new Dictionary<string, int>();
             DrinkTypesStorage = drinkTypesStorage;
             CurrentLoad = 0;
             NumberOfCups = 0;
+        }
+
+        public JuiceVendingMachine(int id,
+            int maxPurchaseCountBeforeBreakingDown,
+            DrinkTypesStorage<Juice> drinkTypesStorage,
+            int currentLoad,
+            int numberOfCups,
+            Dictionary<string, int> fruitAmount):
+            base(id, maxPurchaseCountBeforeBreakingDown)
+        {
+            DrinkTypesStorage = drinkTypesStorage;
+            CurrentLoad = currentLoad;
+            NumberOfCups = numberOfCups;
+            _fruitAmount = fruitAmount;
         }
 
         public override AbstractDrink Sell(string drinkName)

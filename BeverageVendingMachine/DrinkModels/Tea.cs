@@ -11,5 +11,19 @@ namespace BeverageVendingMachine.DrinkModels
         public double Sugar { get; set; }
 
         public double Water { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Tea tea &&
+                   Name == tea.Name &&
+                   Price == tea.Price &&
+                   Sugar == tea.Sugar &&
+                   Water == tea.Water;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

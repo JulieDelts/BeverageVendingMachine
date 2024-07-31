@@ -13,5 +13,20 @@ namespace BeverageVendingMachine.DrinkModels
         public int FruitAmountNeeded { get; set; } = 2;
 
         public override double Price { get; set; } = 300;
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Juice juice &&
+                   Name == juice.Name &&
+                   Price == juice.Price &&
+                   Type == juice.Type &&
+                   FruitAmountNeeded == juice.FruitAmountNeeded &&
+                   Price == juice.Price;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

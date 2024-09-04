@@ -5,7 +5,7 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeverageVendingMachine", "BeverageVendingMachine\BeverageVendingMachine.csproj", "{A0B0575A-CD94-4C2A-A5FC-D8FAF3CBA979}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeverageVendingMachine.Test", "BeverageVendingMachine.Test\BeverageVendingMachine.Test.csproj", "{E527F857-89B2-4BDA-8944-78CA355F8504}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeverageVendingMachineTest", "BeverageVendingMachine.Test\BeverageVendingMachineTest.csproj", "{E527F857-89B2-4BDA-8944-78CA355F8504}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

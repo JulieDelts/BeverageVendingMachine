@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BeverageVendingMachine.VendingMachines;
-using BeverageVendingMachine.Test.LemonadeVendingMachineTestCaseSource;
+using BeverageVendingMachineTest.TestSources.LemonadeVendingMachineTestCaseSource;
 using BeverageVendingMachine.DrinkModels;
 
-namespace BeverageVendingMachine.Test.Tests
+namespace BeverageVendingMachineTest.Tests
 {
     public class LemonadeVendingMachineTests
     {

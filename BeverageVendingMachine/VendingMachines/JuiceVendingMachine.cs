@@ -149,14 +149,7 @@ namespace BeverageVendingMachine.VendingMachines
 
         protected override bool IsReadyToSell()
         {
-            bool readyToSellGoods = true;
-
-            if (CurrentPurchaseCount == MaxPurchaseCountBeforeBreakingDown || TimeOfLastUpdate.AddDays(2) < InteractionTime)
-            {
-                readyToSellGoods = false;
-            }
-
-            return readyToSellGoods;
+            return CurrentPurchaseCount == MaxPurchaseCountBeforeBreakingDown || TimeOfLastUpdate.AddDays(2) < InteractionTime;
         }
 
         public override bool Equals(object? obj)

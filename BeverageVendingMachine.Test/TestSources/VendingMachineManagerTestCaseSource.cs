@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using BeverageVendingMachine.DrinkModels;
 using BeverageVendingMachine.VendingMachines;
+using BeverageVendingMachine;
 
-namespace BeverageVendingMachine.Test
+namespace BeverageVendingMachineTest.TestSources
 {
     namespace VendingMachineManagerTestCaseSource
     {

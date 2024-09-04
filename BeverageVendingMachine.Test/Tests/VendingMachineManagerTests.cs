@@ -1,10 +1,11 @@
 using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using BeverageVendingMachine.DrinkModels;
+using BeverageVendingMachine;
 using BeverageVendingMachine.VendingMachines;
-using BeverageVendingMachine.Test.VendingMachineManagerTestCaseSource;
+using BeverageVendingMachineTest.TestSources.VendingMachineManagerTestCaseSource;
 
-namespace BeverageVendingMachine.Test.Tests
+namespace BeverageVendingMachineTest.Tests
 {
     public class VendingMachineManagerTests
     {

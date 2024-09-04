@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BeverageVendingMachine.DrinkModels;
-using BeverageVendingMachine.Test.JuiceVendingMachineTestCaseSource;
+using BeverageVendingMachineTest.TestSources.JuiceVendingMachineTestCaseSource;
 using BeverageVendingMachine.VendingMachines;
 
-namespace BeverageVendingMachine.Test.Tests
+namespace BeverageVendingMachineTest.Tests
 {
     public class JuiceVendingMachineTests
     {
@@ -56,6 +56,5 @@ namespace BeverageVendingMachine.Test.Tests
             var actual = machine;
             Assert.That(actual, Is.EqualTo(expected));
         }
-
     }
 }

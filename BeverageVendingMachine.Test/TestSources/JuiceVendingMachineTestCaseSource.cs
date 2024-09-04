@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BeverageVendingMachine.DrinkModels;
+using BeverageVendingMachine;
 
 using BeverageVendingMachine.VendingMachines;
 
-namespace BeverageVendingMachine.Test
+namespace BeverageVendingMachineTest.TestSources
 {
     namespace JuiceVendingMachineTestCaseSource
     {

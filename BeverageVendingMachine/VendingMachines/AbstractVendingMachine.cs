@@ -42,14 +42,7 @@ namespace BeverageVendingMachine.VendingMachines
 
         protected virtual bool IsReadyToSell()
         {
-            bool readyToSellGoods = true;
-
-            if (CurrentPurchaseCount == MaxPurchaseCountBeforeBreakingDown)
-            {
-                readyToSellGoods = false;
-            }
-
-            return readyToSellGoods;
+            return CurrentPurchaseCount == MaxPurchaseCountBeforeBreakingDown;
         }
     }
 }
